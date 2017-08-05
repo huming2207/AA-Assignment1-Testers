@@ -8,7 +8,7 @@ namespace DataSourceTester.Generator
     {
         public static List<string> GenerateSameStringList(int itemCount)
         {
-            return Enumerable.Repeat("I am very happy to stay with you", itemCount).ToList();
+            return Enumerable.Repeat("I'm feeling very happy to stay with you", itemCount).ToList();
         }
 
         public static List<string> GenerateEnglishWordList(string textFile)
