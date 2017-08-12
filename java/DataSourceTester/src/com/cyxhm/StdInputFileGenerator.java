@@ -9,6 +9,10 @@ public class StdInputFileGenerator
     public static void SeparatedEastAsianCharsFromText(String inputPath, String outputPath,
                                               boolean randomDelete) throws IOException
     {
+        // Java sucks, it doesn't provide Stopwatch like C# did. So I did some DIY here.
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.start();
+
         System.out.println("[INFO] Running test: SeparatedChineseCharsFromText()");
 
         // Declare writer and reader
@@ -59,10 +63,19 @@ public class StdInputFileGenerator
         // Close the writer and reader
         bufferedWriter.close();
         bufferedReader.close();
+
+        // Count the time
+        stopwatch.stop();
+        System.out.println(String.format("[INFO] Time spent %d ms.", stopwatch.getEndTimestamp()));
+
     }
 
     public static void RepeatEnglishSentence(String outputPath, long repeatTimes) throws IOException
     {
+        // Java sucks, it doesn't provide Stopwatch like C# did. So I did some DIY here.
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.start();
+
         System.out.println("[INFO] Running test: RepeatEnglishSentence()");
 
         String repeatString = "I'm feeling very happy to be with you.";
@@ -77,12 +90,20 @@ public class StdInputFileGenerator
 
         bufferedWriter.close();
 
+        // Count the time
+        stopwatch.stop();
+        System.out.println(String.format("[INFO] Time spent %d ms.", stopwatch.getEndTimestamp()));
+
     }
 
 
     public static void SeparatedEnglishWord(String inputPath, String outputPath,
                                      boolean randomDelete) throws IOException
     {
+        // Java sucks, it doesn't provide Stopwatch like C# did. So I did some DIY here.
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.start();
+
         System.out.println("[INFO] Running test: SeparatedEnglishWord()");
 
         // Declare writer and reader
@@ -116,6 +137,10 @@ public class StdInputFileGenerator
 
         // ...and close it later when finishes
         bufferedWriter.close();
+
+        // Count the time
+        stopwatch.stop();
+        System.out.println(String.format("[INFO] Time spent %d ms.", stopwatch.getEndTimestamp()));
     }
 
     // ONLY EAST ASIAN chars  will reserved after this filter method is applied...
@@ -126,6 +151,7 @@ public class StdInputFileGenerator
     //      Vietnamese (Han-Nom chars)
     private static String easternAsianStrFilter(String inputStr)
     {
+
         StringBuilder stringBuilder = new StringBuilder();
 
         // Iterate the string by each char inside
