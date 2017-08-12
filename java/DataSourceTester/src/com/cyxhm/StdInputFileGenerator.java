@@ -16,8 +16,8 @@ public class StdInputFileGenerator
         System.out.println("[INFO] Running test: SeparatedChineseCharsFromText()");
 
         // Declare writer and reader
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(inputPath));
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(outputPath));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputPath));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputPath));
         long lineCount = 0;
 
         // Current line of the string
@@ -53,7 +53,7 @@ public class StdInputFileGenerator
                 {
                     // Randomly pick a char from the char array and write with a delete command "RO"
                     bufferedWriter.write(
-                            String.format("RO %c",
+                            String.format("RO %c\n",
                             charArray[ThreadLocalRandom.current().nextInt(0, charArray.length - 1)]));
                 }
             }
@@ -61,6 +61,7 @@ public class StdInputFileGenerator
         }
 
         // Close the writer and reader
+        bufferedWriter.flush();
         bufferedWriter.close();
         bufferedReader.close();
 
@@ -107,8 +108,8 @@ public class StdInputFileGenerator
         System.out.println("[INFO] Running test: SeparatedEnglishWord()");
 
         // Declare writer and reader
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(inputPath));
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(outputPath));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputPath));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputPath));
         long lineCount = 0;
         long wordCount = 0;
 

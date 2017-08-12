@@ -8,7 +8,7 @@ public class Tester
 
     public static void main(String[] args)
     {
-
+        mainMenu();
     }
 
     private static void mainMenu()
@@ -29,9 +29,9 @@ public class Tester
             case 1:
             {
                 // Gather some information...
-                System.out.print("[NOTICE] Enter article text file input path: ");
+                System.out.print("[NOTICE] Enter article text file path: ");
                 String inputPath = scanner.nextLine();
-                System.out.print("\n[NOTICE] Enter output text file input path: ");
+                System.out.print("\n[NOTICE] Enter output text file path: ");
                 String outputPath = scanner.nextLine();
                 System.out.print("[NOTICE] Enter \"yes\" to generate random deletion command,\n" +
                         "[NOTICE] or press enter to continue: ");
@@ -57,7 +57,7 @@ public class Tester
                 // Gather some information...
                 System.out.print("[NOTICE] Enter repeat times: ");
                 long repeatTimes = Long.valueOf(scanner.nextLine());
-                System.out.print("\n[NOTICE] Enter output text file input path: ");
+                System.out.print("\n[NOTICE] Enter output text file path: ");
                 String outputPath = scanner.nextLine();
                 System.out.print("[NOTICE] Enter \"yes\" to generate random deletion command,\n" +
                         "[NOTICE] or press enter to continue: ");
@@ -81,9 +81,9 @@ public class Tester
             case 3:
             {
                 // Gather some information...
-                System.out.print("[NOTICE] Enter article text file input path: ");
+                System.out.print("[NOTICE] Enter article text file path: ");
                 String inputPath = scanner.nextLine();
-                System.out.print("\n[NOTICE] Enter output text file input path: ");
+                System.out.print("\n[NOTICE] Enter output text file path: ");
                 String outputPath = scanner.nextLine();
                 System.out.print("[NOTICE] Enter \"yes\" to generate random deletion command,\n" +
                         "[NOTICE] or press enter to continue: ");
