@@ -1,4 +1,10 @@
+import org.ansj.domain.Term;
+import org.ansj.splitWord.analysis.NlpAnalysis;
+import org.ansj.splitWord.analysis.ToAnalysis;
+import org.apache.commons.lang.time.StopWatch;
+
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -7,9 +13,8 @@ public class StdInputFileGenerator
     public static void SeparatedEastAsianCharsFromText(String inputPath, String outputPath,
                                                        boolean randomDelete) throws IOException
     {
-        // Java sucks, it doesn't provide Stopwatch like C# did. So I did some DIY here.
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.start();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
         System.out.println("[INFO] Running test: SeparatedChineseCharsFromText()");
 
@@ -24,35 +29,39 @@ public class StdInputFileGenerator
 
         while ((lineRead = bufferedReader.readLine()) != null)
         {
-            // Increase the line counter
-            lineCount++;
-            System.out.println(String.format("[INFO] Reading/writing line %d...", lineCount));
-
-            // Convert a line of string to char array
-            char[] charArray = easternAsianStrFilter(lineRead).toCharArray();
-
-            // ...then write every char as command (append "A" before the char) one by one
-            for (char selectedChar : charArray)
+            if(!(lineRead.isEmpty() || lineRead.equals("\n") || lineRead.equals("\r\n")) )
             {
-                bufferedWriter.write(String.format("A %c\n", selectedChar));
-            }
+                // Increase the line counter
+                lineCount++;
+                System.out.println(String.format("[INFO] Reading/writing line %d...", lineCount));
 
-            // Flush cache when a line finishes
-            bufferedWriter.flush();
+                // Convert a line of string to char array
+                char[] charArray = easternAsianStrFilter(lineRead).toCharArray();
 
-            // If user requires to do a random delete, then
-            if(randomDelete)
-            {
-                // Declare random
-                Random random = new Random();
-
-                // Get a random boolean
-                if(random.nextBoolean())
+                // ...then write every char as command (append "A" before the char) one by one
+                for (char selectedChar : charArray)
                 {
-                    // Randomly pick a char from the char array and write with a delete command "RO"
-                    bufferedWriter.write(
-                            String.format("RO %c\n",
-                                    charArray[ThreadLocalRandom.current().nextInt(0, charArray.length - 1)]));
+                    bufferedWriter.write(String.format("A %c\n", selectedChar));
+                }
+
+                // Flush cache when a line finishes
+                bufferedWriter.flush();
+
+                // If user requires to do a random delete, then
+                if (randomDelete && charArray.length > 1)
+                {
+                    // Declare random
+                    Random random = new Random();
+
+                    // Get a random boolean
+                    if (random.nextBoolean())
+                    {
+                        // Randomly pick a char from the char array and write with a delete command "RA"
+                        bufferedWriter.write(
+                                String.format("RA %c\n",
+                                        charArray[ThreadLocalRandom.current()
+                                                .nextInt(0, charArray.length - 1)]));
+                    }
                 }
             }
 
@@ -64,16 +73,74 @@ public class StdInputFileGenerator
         bufferedReader.close();
 
         // Count the time
-        stopwatch.stop();
-        System.out.println(String.format("[INFO] Time spent %d ms.", stopwatch.getEndTimestamp()));
+        stopWatch.stop();
+        System.out.println(String.format("[INFO] Time spent %d ms.", stopWatch.getTime()));
 
+    }
+
+    public static void SeparatedChinesePhrase(String inputPath, String outputPath,
+                                              boolean randomDelete) throws IOException
+    {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        System.out.println("[INFO] Running test: SeparatedChinesePhrase");
+
+        // Declare writer and reader
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputPath));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputPath));
+        long lineCount = 0;
+
+        // Current line of the string
+        String lineRead;
+
+        while ((lineRead = bufferedReader.readLine()) != null)
+        {
+            if(!(lineRead.isEmpty() || lineRead.equals("\n") || lineRead.equals("\r\n")) )
+            {
+
+                // Increase the line counter
+                lineCount++;
+                System.out.println(String.format("[INFO] Reading/writing line %d...", lineCount));
+
+                // Creates a phrase list
+                ArrayList<String> phraseList = new ArrayList<>();
+
+                // Parse the line string and parse it to phrases
+                for (Term term : ToAnalysis.parse(lineRead).getTerms())
+                {
+                    phraseList.add(term.getName());
+                    bufferedWriter.write(String.format("A %s\n", term.getName()));
+                }
+
+                // If user requires to do a random delete, then
+                if (randomDelete && phraseList.size() > 1)
+                {
+                    // Declare random
+                    Random random = new Random();
+
+                    // Randomly pick a char from the char array and write with a delete command "RA"
+                    bufferedWriter.write(
+                            String.format("RA %s\n", phraseList.get(ThreadLocalRandom.current()
+                                    .nextInt(0, phraseList.size() - 1))));
+                }
+            }
+        }
+
+        // Close the writer and reader
+        bufferedWriter.flush();
+        bufferedWriter.close();
+        bufferedReader.close();
+
+        // Count the time
+        stopWatch.stop();
+        System.out.println(String.format("[INFO] Time spent %d ms.", stopWatch.getTime()));
     }
 
     public static void RepeatEnglishSentence(String outputPath, long repeatTimes) throws IOException
     {
-        // Java sucks, it doesn't provide Stopwatch like C# did. So I did some DIY here.
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.start();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
         System.out.println("[INFO] Running test: RepeatEnglishSentence()");
 
@@ -90,8 +157,8 @@ public class StdInputFileGenerator
         bufferedWriter.close();
 
         // Count the time
-        stopwatch.stop();
-        System.out.println(String.format("[INFO] Time spent %d ms.", stopwatch.getEndTimestamp()));
+        stopWatch.stop();
+        System.out.println(String.format("[INFO] Time spent %d ms.", stopWatch.getTime()));
 
     }
 
@@ -99,9 +166,8 @@ public class StdInputFileGenerator
     public static void SeparatedEnglishWord(String inputPath, String outputPath,
                                             boolean randomDelete) throws IOException
     {
-        // Java sucks, it doesn't provide Stopwatch like C# did. So I did some DIY here.
-        Stopwatch stopwatch = new Stopwatch();
-        stopwatch.start();
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
         System.out.println("[INFO] Running test: SeparatedEnglishWord()");
 
@@ -116,30 +182,33 @@ public class StdInputFileGenerator
 
         while ((lineRead = bufferedReader.readLine()) != null)
         {
-            // Increase the line counter
-            lineCount++;
-            System.out.println(String.format("[INFO] Reading/writing line %d, word count...", lineCount));
-
-            // Split to word, delimiters are: space, comma, slash, and full stop (".")
-            String[] wordArray = lineRead.split("[ .,/]+");
-
-            // Write to file
-            for(String word : wordArray)
+            if(!(lineRead.isEmpty() || lineRead.equals("\n") || lineRead.equals("\r\n")) )
             {
-                wordCount++;
-                bufferedWriter.write(String.format("A %s\n", word));
-            }
+                // Increase the line counter
+                lineCount++;
+                System.out.println(String.format("[INFO] Reading/writing line %d, word count...", lineCount));
 
-            // Flush the writer after every line
-            bufferedWriter.flush();
+                // Split to word, delimiters are: space, comma, slash, and full stop (".")
+                String[] wordArray = lineRead.split("[ .,/]+");
+
+                // Write to file
+                for (String word : wordArray)
+                {
+                    wordCount++;
+                    bufferedWriter.write(String.format("A %s\n", word));
+                }
+
+                // Flush the writer after every line
+                bufferedWriter.flush();
+            }
         }
 
         // ...and close it later when finishes
         bufferedWriter.close();
 
         // Count the time
-        stopwatch.stop();
-        System.out.println(String.format("[INFO] Time spent %d ms.", stopwatch.getEndTimestamp()));
+        stopWatch.stop();
+        System.out.println(String.format("[INFO] Time spent %d ms.", stopWatch.getTime()));
     }
 
     // ONLY EAST ASIAN chars  will reserved after this filter method is applied...

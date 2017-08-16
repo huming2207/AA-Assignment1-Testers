@@ -9,13 +9,17 @@ public class Tester
         mainMenu();
     }
 
+
+
     private static void mainMenu()
     {
         System.out.println("Data generator for AA Assignment 1 \nBy Ming Hu (s3554025) & Yuxuan Cheng (s3516930)");
         System.out.println("Select a test method:\n" +
                 "1. Test by CJK/CJKV (East Asian) chars\n" +
                 "2. Test by repeating English sentences\n" +
-                "3. Test by English words\n\n");
+                "3. Test by English words\n" +
+                "4. Test by Chinese phrases\n" +
+                "5. Run test and get result\n\n");
 
         Scanner scanner = new Scanner(System.in);
         int userInput = scanner.nextInt();
@@ -102,6 +106,32 @@ public class Tester
 
                 break;
 
+            }
+            case 4:
+            {
+                // Gather some information...
+                System.out.print("[NOTICE] Enter article text file path: ");
+                String inputPath = scanner.nextLine();
+                System.out.print("\n[NOTICE] Enter output text file path: ");
+                String outputPath = scanner.nextLine();
+                System.out.print("[NOTICE] Enter \"yes\" to generate random deletion command,\n" +
+                        "[NOTICE] or press enter to continue: ");
+                boolean generateRandomDelCmd = scanner.nextLine().toLowerCase().equals("yes");
+
+                // Run generator
+                try
+                {
+                    StdInputFileGenerator.SeparatedChinesePhrase(inputPath, outputPath, generateRandomDelCmd);
+                }
+                catch (IOException ioError)
+                {
+                    // If error occurs, exit by status code 1 with error message shown
+                    System.err.println("[ERROR] IO Exception thrown! Message shows below: \n\n");
+                    ioError.printStackTrace();
+                    System.exit(1);
+                }
+
+                break;
             }
             default:
             {
