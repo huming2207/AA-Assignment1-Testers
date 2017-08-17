@@ -1,3 +1,5 @@
+import java.io.File;
+import java.nio.file.*;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -128,6 +130,56 @@ public class Tester
                     // If error occurs, exit by status code 1 with error message shown
                     System.err.println("[ERROR] IO Exception thrown! Message shows below: \n\n");
                     ioError.printStackTrace();
+                    System.exit(1);
+                }
+
+                break;
+            }
+            case 5:
+            {
+                try
+                {
+                    System.out.print("[INFO] Your assignment source path please: ");
+                    String assignmentPath = scanner.nextLine();
+
+                    // Test if assignment path can be found
+                    if(!(Files.exists(Paths.get(assignmentPath))))
+                    {
+                        System.out.println("[INFO] Invalid path, please try again.");
+                        mainMenu(); return;
+                    }
+
+                    // Test if assignment source can be found
+                    if(!(Files.exists(Paths.get(assignmentPath + "/MultisetTester.class"))))
+                    {
+                        System.out.println("[INFO] Main class not found, please compile first.");
+                        System.exit(2);
+                    }
+
+                    // Grab the test part
+                    System.out.print(
+                            "[INFO] Which multiset would you like to test?\n " +
+                            "[INFO] It can be: bst, linkedlist, sortedlist, baltree, hashtree.\n" +
+                            "[INFO] Enter your choice: ");
+                    String testPart = scanner.nextLine();
+
+                    // Grab the test file and see if it exists
+                    System.out.print("[INFO] Enter your test file path: ");
+                    String testFilePath = scanner.nextLine();
+
+                    if(!(Files.exists(Paths.get(testFilePath))))
+                    {
+                        System.out.println("[INFO] Test file not found, please try again.");
+                        mainMenu();
+                    }
+
+                    System.out.println("[INFO] Now testing, please wait...");
+                    AssignmentRunner.Run(assignmentPath, testPart, testFilePath);
+                }
+                catch (IOException | InterruptedException exceptions)
+                {
+                    System.err.println("[ERROR] Exception occur, application will exit.");
+                    exceptions.printStackTrace();
                     System.exit(1);
                 }
 
