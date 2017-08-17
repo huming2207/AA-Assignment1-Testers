@@ -112,79 +112,6 @@ public class StdInputFileGenerator
         System.out.println(String.format("[INFO] Time spent %d ms.", stopWatch.getTime()));
     }
 
-    public static void RepeatEnglishSentence(String outputPath, long repeatTimes) throws IOException
-    {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-
-        System.out.println("[INFO] Running test: RepeatEnglishSentence()");
-
-        String repeatString = "I'm feeling very happy to be with you.";
-
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputPath));
-
-        for(long currentRepeat = 0; currentRepeat < repeatTimes; currentRepeat++)
-        {
-            bufferedWriter.write(repeatString + "\n");
-            bufferedWriter.flush();
-        }
-
-        bufferedWriter.close();
-
-        // Count the time
-        stopWatch.stop();
-        System.out.println(String.format("[INFO] Time spent %d ms.", stopWatch.getTime()));
-
-    }
-
-
-    public static void SeparatedEnglishWord(String inputPath, String outputPath,
-                                            boolean randomDelete) throws IOException
-    {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-
-        System.out.println("[INFO] Running test: SeparatedEnglishWord()");
-
-        // Declare writer and reader
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputPath));
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputPath));
-        long lineCount = 0;
-        long wordCount = 0;
-
-        // Current line of the string
-        String lineRead;
-
-        while ((lineRead = bufferedReader.readLine()) != null)
-        {
-            if(!(lineRead.isEmpty() || lineRead.equals("\n") || lineRead.equals("\r\n")) )
-            {
-                // Increase the line counter
-                lineCount++;
-                System.out.println(String.format("[INFO] Reading/writing line %d, word count...", lineCount));
-
-                // Split to word, delimiters are: space, comma, slash, and full stop (".")
-                String[] wordArray = lineRead.split("[ .,/]+");
-
-                // Write to file
-                for (String word : wordArray)
-                {
-                    wordCount++;
-                    bufferedWriter.write(String.format("A %s\n", word));
-                }
-
-                // Flush the writer after every line
-                bufferedWriter.flush();
-            }
-        }
-
-        // ...and close it later when finishes
-        bufferedWriter.close();
-
-        // Count the time
-        stopWatch.stop();
-        System.out.println(String.format("[INFO] Time spent %d ms.", stopWatch.getTime()));
-    }
 
     // ONLY EAST ASIAN chars  will reserved after this filter method is applied...
     // This includes:
@@ -242,7 +169,7 @@ public class StdInputFileGenerator
             {
                 for(String item : itemList)
                 {
-                    writer.write(String.format("RA %s\n", item));
+                    writer.write(String.format("RO %s\n", item));
                 }
 
                 writer.flush();
@@ -267,8 +194,7 @@ public class StdInputFileGenerator
                     if (random.nextBoolean())
                     {
                         // Randomly pick a char from the char array and write with a delete command "RA"
-                        writer.write(
-                                String.format("RA %s\n", item));
+                        writer.write(String.format("RO %s\n", item));
 
                     }
                 }

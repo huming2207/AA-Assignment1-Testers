@@ -18,16 +18,13 @@ public class Tester
         System.out.println("Data generator for AA Assignment 1 \nBy Ming Hu (s3554025) & Yuxuan Cheng (s3516930)");
         System.out.println("Select a test method:\n" +
                 "1. Test by CJK/CJKV (East Asian) chars\n" +
-                "2. Test by repeating English sentences\n" +
-                "3. Test by English words\n" +
-                "4. Test by Chinese phrases\n" +
-                "5. Run test and get result\n\n");
+                "2. Test by phrases\n" +
+                "3. Run test and get result\n\n");
 
         Scanner scanner = new Scanner(System.in);
         int userInput = scanner.nextInt();
         scanner.nextLine(); // Consumes new line char
 
-        // TODO: 1. Shorten this switch-case; 2. Implements method #2's random deletion
         switch(userInput)
         {
             case 1:
@@ -37,14 +34,14 @@ public class Tester
                 String inputPath = scanner.nextLine();
                 System.out.print("\n[NOTICE] Enter output text file path: ");
                 String outputPath = scanner.nextLine();
-                System.out.print("[NOTICE] Enter \"yes\" to generate random deletion command,\n" +
-                        "[NOTICE] or press enter to continue: ");
-                boolean generateRandomDelCmd = scanner.nextLine().toLowerCase().equals("yes");
+
+
+                CommandToGenerate commandToGenerate = extraCommandSelector();
 
                 // Run generator
                 try
                 {
-                    StdInputFileGenerator.SeparatedEastAsianCharsFromText(inputPath, outputPath, generateRandomDelCmd);
+                    StdInputFileGenerator.SeparatedEastAsianCharsFromText(inputPath, outputPath, commandToGenerate);
                 }
                 catch (IOException ioError)
                 {
@@ -59,18 +56,17 @@ public class Tester
             case 2:
             {
                 // Gather some information...
-                System.out.print("[NOTICE] Enter repeat times: ");
-                long repeatTimes = Long.valueOf(scanner.nextLine());
+                System.out.print("[NOTICE] Enter article text file path: ");
+                String inputPath = scanner.nextLine();
                 System.out.print("\n[NOTICE] Enter output text file path: ");
                 String outputPath = scanner.nextLine();
-                System.out.print("[NOTICE] Enter \"yes\" to generate random deletion command,\n" +
-                        "[NOTICE] or press enter to continue: ");
-                boolean generateRandomDelCmd = scanner.nextLine().toLowerCase().equals("yes");
+
+                CommandToGenerate commandToGenerate = extraCommandSelector();
 
                 // Run generator
                 try
                 {
-                    StdInputFileGenerator.RepeatEnglishSentence(outputPath, repeatTimes);
+                    StdInputFileGenerator.SeparatedChinesePhrase(inputPath, outputPath, commandToGenerate);
                 }
                 catch (IOException ioError)
                 {
@@ -83,59 +79,6 @@ public class Tester
                 break;
             }
             case 3:
-            {
-                // Gather some information...
-                System.out.print("[NOTICE] Enter article text file path: ");
-                String inputPath = scanner.nextLine();
-                System.out.print("\n[NOTICE] Enter output text file path: ");
-                String outputPath = scanner.nextLine();
-                System.out.print("[NOTICE] Enter \"yes\" to generate random deletion command,\n" +
-                        "[NOTICE] or press enter to continue: ");
-                boolean generateRandomDelCmd = scanner.nextLine().toLowerCase().equals("yes");
-
-                // Run generator
-                try
-                {
-                    StdInputFileGenerator.SeparatedEnglishWord(inputPath, outputPath, generateRandomDelCmd);
-                }
-                catch (IOException ioError)
-                {
-                    // If error occurs, exit by status code 1 with error message shown
-                    System.err.println("[ERROR] IO Exception thrown! Message shows below: \n\n");
-                    ioError.printStackTrace();
-                    System.exit(1);
-                }
-
-                break;
-
-            }
-            case 4:
-            {
-                // Gather some information...
-                System.out.print("[NOTICE] Enter article text file path: ");
-                String inputPath = scanner.nextLine();
-                System.out.print("\n[NOTICE] Enter output text file path: ");
-                String outputPath = scanner.nextLine();
-                System.out.print("[NOTICE] Enter \"yes\" to generate random deletion command,\n" +
-                        "[NOTICE] or press enter to continue: ");
-                boolean generateRandomDelCmd = scanner.nextLine().toLowerCase().equals("yes");
-
-                // Run generator
-                try
-                {
-                    StdInputFileGenerator.SeparatedChinesePhrase(inputPath, outputPath, generateRandomDelCmd);
-                }
-                catch (IOException ioError)
-                {
-                    // If error occurs, exit by status code 1 with error message shown
-                    System.err.println("[ERROR] IO Exception thrown! Message shows below: \n\n");
-                    ioError.printStackTrace();
-                    System.exit(1);
-                }
-
-                break;
-            }
-            case 5:
             {
                 try
                 {
@@ -192,5 +135,39 @@ public class Tester
                 break;
             }
         }
+
+
+    }
+
+    private static CommandToGenerate extraCommandSelector()
+    {
+        System.out.print("[NOTICE] Extra commands selector\n" +
+                "[NOTICE] 1 - Don't append any command\n" +
+                "[NOTICE] 2 - Randomly add some deletion commands (RO)\n" +
+                "[NOTICE] 3 - Add deletion commands after every insertion (RO)\n" +
+                "[NOTICE] 4 - Randomly add some search commands (S)\n" +
+                "[NOTICE] 5 - Add search commands after every insertion (S)\n" +
+                "[NOTICE] Your choice: ");
+
+        Scanner scanner = new Scanner(System.in);
+        int result = scanner.nextInt();
+        scanner.nextLine(); // Consumes new line char
+
+        switch(result)
+        {
+            case 1: return CommandToGenerate.NONE;
+            case 2: return CommandToGenerate.RANDOM_REMOVE;
+            case 3: return CommandToGenerate.ALL_REMOVE;
+            case 4: return CommandToGenerate.RANDOM_SEARCH;
+            case 5: return CommandToGenerate.ALL_SEARCH;
+            default:
+            {
+                System.err.println("[ERROR] Invalid input, please try again.");
+                extraCommandSelector();
+                return CommandToGenerate.NONE; // For shutting up Intellij IDEA's warning only, useless.
+            }
+        }
+
+
     }
 }
