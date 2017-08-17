@@ -1,17 +1,15 @@
 import org.ansj.domain.Term;
-import org.ansj.splitWord.analysis.NlpAnalysis;
 import org.ansj.splitWord.analysis.ToAnalysis;
 import org.apache.commons.lang.time.StopWatch;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class StdInputFileGenerator
 {
-    public static void SeparatedEastAsianCharsFromText(String inputPath, String outputPath,
-                                                       CommandToGenerate commandToGenerate) throws IOException
+    public static void EastAsianCharGenerator(String inputPath, String outputPath,
+                                              CommandToGenerate commandToGenerate) throws IOException
     {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -61,8 +59,8 @@ public class StdInputFileGenerator
 
     }
 
-    public static void SeparatedChinesePhrase(String inputPath, String outputPath,
-                                              CommandToGenerate commandToGenerate) throws IOException
+    public static void PhraseGenerator(String inputPath, String outputPath,
+                                       CommandToGenerate commandToGenerate) throws IOException
     {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

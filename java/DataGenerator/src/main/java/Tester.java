@@ -1,4 +1,3 @@
-import java.io.File;
 import java.nio.file.*;
 import java.io.IOException;
 import java.util.Scanner;
@@ -41,7 +40,7 @@ public class Tester
                 // Run generator
                 try
                 {
-                    StdInputFileGenerator.SeparatedEastAsianCharsFromText(inputPath, outputPath, commandToGenerate);
+                    StdInputFileGenerator.EastAsianCharGenerator(inputPath, outputPath, commandToGenerate);
                 }
                 catch (IOException ioError)
                 {
@@ -66,7 +65,7 @@ public class Tester
                 // Run generator
                 try
                 {
-                    StdInputFileGenerator.SeparatedChinesePhrase(inputPath, outputPath, commandToGenerate);
+                    StdInputFileGenerator.PhraseGenerator(inputPath, outputPath, commandToGenerate);
                 }
                 catch (IOException ioError)
                 {
