@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class StdInputFileGenerator
 {
     public static void SeparatedEastAsianCharsFromText(String inputPath, String outputPath,
-                                                       boolean randomDelete) throws IOException
+                                                       CommandToGenerate commandToGenerate) throws IOException
     {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -29,8 +29,7 @@ public class StdInputFileGenerator
 
         while ((lineRead = bufferedReader.readLine()) != null)
         {
-            if(!(lineRead.isEmpty() || lineRead.equals("\n") || lineRead.equals("\r\n")) )
-            {
+            if(!(lineRead.isEmpty() || lineRead.equals("\n") || lineRead.equals("\r\n")) ) {
                 // Increase the line counter
                 lineCount++;
                 System.out.println(String.format("[INFO] Reading/writing line %d...", lineCount));
@@ -39,32 +38,16 @@ public class StdInputFileGenerator
                 char[] charArray = easternAsianStrFilter(lineRead).toCharArray();
 
                 // ...then write every char as command (append "A" before the char) one by one
-                for (char selectedChar : charArray)
-                {
+                for (char selectedChar : charArray) {
                     bufferedWriter.write(String.format("A %c\n", selectedChar));
                 }
 
                 // Flush cache when a line finishes
                 bufferedWriter.flush();
 
-                // If user requires to do a random delete, then
-                if (randomDelete && charArray.length > 1)
-                {
-                    // Declare random
-                    Random random = new Random();
-
-                    // Get a random boolean
-                    if (random.nextBoolean())
-                    {
-                        // Randomly pick a char from the char array and write with a delete command "RA"
-                        bufferedWriter.write(
-                                String.format("RA %c\n",
-                                        charArray[ThreadLocalRandom.current()
-                                                .nextInt(0, charArray.length - 1)]));
-                    }
-                }
+                // Generate the commands
+                commandGenerator(commandToGenerate, charArray, bufferedWriter);
             }
-
         }
 
         // Close the writer and reader
@@ -79,7 +62,7 @@ public class StdInputFileGenerator
     }
 
     public static void SeparatedChinesePhrase(String inputPath, String outputPath,
-                                              boolean randomDelete) throws IOException
+                                              CommandToGenerate commandToGenerate) throws IOException
     {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -113,17 +96,9 @@ public class StdInputFileGenerator
                     bufferedWriter.write(String.format("A %s\n", term.getName()));
                 }
 
-                // If user requires to do a random delete, then
-                if (randomDelete && phraseList.size() > 1)
-                {
-                    // Declare random
-                    Random random = new Random();
+                // If user need to generate some extra commands, then do it...
+                commandGenerator(commandToGenerate, phraseList, bufferedWriter);
 
-                    // Randomly pick a char from the char array and write with a delete command "RA"
-                    bufferedWriter.write(
-                            String.format("RA %s\n", phraseList.get(ThreadLocalRandom.current()
-                                    .nextInt(0, phraseList.size() - 1))));
-                }
             }
         }
 
@@ -251,5 +226,88 @@ public class StdInputFileGenerator
 
         return stringBuilder.toString();
     }
+
+    private static void commandGenerator(CommandToGenerate commandToGenerate,
+                                         ArrayList<String> itemList, BufferedWriter writer) throws IOException
+    {
+        if(itemList.size() <= 1) return;
+
+        switch (commandToGenerate)
+        {
+            case NONE:
+            {
+                break;
+            }
+            case ALL_REMOVE:
+            {
+                for(String item : itemList)
+                {
+                    writer.write(String.format("RA %s\n", item));
+                }
+
+                writer.flush();
+                break;
+            }
+            case ALL_SEARCH:
+            {
+                for(String item : itemList)
+                {
+                    writer.write(String.format("S %s\n", item));
+                }
+
+                writer.flush();
+                break;
+            }
+            case RANDOM_REMOVE:
+            {
+                Random random = new Random();
+                for(String item : itemList)
+                {
+                    // Get a random boolean
+                    if (random.nextBoolean())
+                    {
+                        // Randomly pick a char from the char array and write with a delete command "RA"
+                        writer.write(
+                                String.format("RA %s\n", item));
+
+                    }
+                }
+
+                writer.flush();
+                break;
+            }
+            case RANDOM_SEARCH:
+            {
+                Random random = new Random();
+                for(String item : itemList)
+                {
+                    // Get a random boolean
+                    if (random.nextBoolean())
+                    {
+                        // Randomly pick a char from the char array and write with a delete command "RA"
+                        writer.write(
+                                String.format("S %s\n", item));
+                    }
+                }
+
+                writer.flush();
+                break;
+            }
+        }
+    }
+
+    private static void commandGenerator(CommandToGenerate commandToGenerate,
+                                         char[] charList, BufferedWriter writer) throws IOException
+    {
+        ArrayList<String> strList = new ArrayList<>();
+
+        for(Character character : charList)
+        {
+            strList.add(character.toString());
+        }
+
+        commandGenerator(commandToGenerate, strList, writer);
+    }
+
 
 }
