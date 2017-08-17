@@ -92,8 +92,12 @@ public class StdInputFileGenerator
                 // Parse the line string and parse it to phrases
                 for (Term term : ToAnalysis.parse(lineRead).getTerms())
                 {
-                    phraseList.add(term.getName());
-                    bufferedWriter.write(String.format("A %s\n", term.getName()));
+                    // Skip empty term name
+                    if(!term.getName().isEmpty() && !term.getName().equals(" "))
+                    {
+                        phraseList.add(term.getName());
+                        bufferedWriter.write(String.format("A %s\n", term.getName()));
+                    }
                 }
 
                 // If user need to generate some extra commands, then do it...
