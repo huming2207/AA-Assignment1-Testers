@@ -36,8 +36,6 @@ public class AssignmentRunner
 
         stopWatch.start();
 
-        // Add some new lines...
-        System.out.println("\n");
 
         // Iterate the test file and input it to stdin of the assignment program
         while((testFileLineRead = testFileReader.readLine()) != null)

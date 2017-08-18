@@ -1,3 +1,4 @@
+import java.io.File;
 import java.nio.file.*;
 import java.io.IOException;
 import java.util.Scanner;
@@ -103,7 +104,7 @@ public class Tester
                     // Grab the test part
                     System.out.print(
                             "[INFO] Which multiset would you like to test?\n " +
-                            "[INFO] It can be: bst, linkedlist, sortedlist, baltree, hashtree.\n" +
+                            "[INFO] It can be: bst, linkedlist, sortedlinkedlist, baltree, hash.\n" +
                             "[INFO] Enter your choice: ");
                     String testPart = scanner.nextLine();
 
@@ -111,14 +112,23 @@ public class Tester
                     System.out.print("[INFO] Enter your test file path: ");
                     String testFilePath = scanner.nextLine();
 
-                    if(!(Files.exists(Paths.get(testFilePath))))
+                    // Iterate all files in one path
+                    if (!(Files.exists(Paths.get(testFilePath))))
                     {
                         System.out.println("[INFO] Test file not found, please try again.");
                         mainMenu();
                     }
 
-                    System.out.println("[INFO] Now testing, please wait...");
-                    AssignmentRunner.Run(assignmentPath, testPart, testFilePath);
+                    // Iterate the files in one test file path so that it can
+                    for(File file : new File(testFilePath).listFiles())
+
+                    {
+                        System.out.println(String.format("\n\n[INFO] Now testing %s, please wait...", file.getCanonicalPath()));
+                        AssignmentRunner.Run(assignmentPath, testPart, file.getCanonicalPath());
+                    }
+
+
+
                 }
                 catch (IOException | InterruptedException exceptions)
                 {
@@ -137,6 +147,7 @@ public class Tester
             }
         }
 
+        mainMenu();
 
     }
 
