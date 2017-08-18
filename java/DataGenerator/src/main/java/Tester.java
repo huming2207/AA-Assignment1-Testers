@@ -50,6 +50,7 @@ public class Tester
                     System.exit(1);
                 }
 
+                mainMenu();
                 break;
             }
             case 2:
@@ -75,6 +76,7 @@ public class Tester
                     System.exit(1);
                 }
 
+                mainMenu();
                 break;
             }
             case 3:
