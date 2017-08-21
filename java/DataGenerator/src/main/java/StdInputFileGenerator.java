@@ -7,8 +7,7 @@ import java.util.ArrayList;
 
 public class StdInputFileGenerator
 {
-    public static void EastAsianCharGenerator(String inputPath, String outputPath,
-                                              CommandType commandType) throws IOException
+    public static void EastAsianCharGenerator(String inputFile, String outputPath) throws IOException
     {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -16,8 +15,15 @@ public class StdInputFileGenerator
         System.out.println("[INFO] Running test: SeparatedChineseCharsFromText()");
 
         // Declare writer and reader
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputPath));
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputPath));
+        // Declare writer and reader
+        BufferedWriter insertionWriter = new BufferedWriter(
+                new FileWriter(outputPath + ".addition.txt"));
+        BufferedWriter deletionWriter = new BufferedWriter(
+                new FileWriter(outputPath + ".deletion.txt"));
+        BufferedWriter searchWriter = new BufferedWriter(
+                new FileWriter(outputPath + ".search.txt"));
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFile));
         long lineCount = 0;
 
         // Current line of the string
@@ -37,20 +43,24 @@ public class StdInputFileGenerator
                 // ...then write every char as command (append "A" before the char) one by one
                 for (char selectedChar : charArray)
                 {
-                    bufferedWriter.write(String.format("A %c\n", selectedChar));
+                    insertionWriter.write(String.format("A %c\n", selectedChar));
+                    deletionWriter.write(String.format("RO %c\n", selectedChar));
+                    searchWriter.write(String.format("S %c\n", selectedChar));
                 }
 
-                // Flush cache when a line finishes
-                bufferedWriter.flush();
-
-                // Generate the commands
-                commandGenerator(commandType, charArray, bufferedWriter);
             }
         }
 
+
         // Close the writer and reader
-        bufferedWriter.flush();
-        bufferedWriter.close();
+        insertionWriter.flush();
+        deletionWriter.flush();
+        searchWriter.flush();
+
+        insertionWriter.close();
+        deletionWriter.close();
+        searchWriter.close();
+
         bufferedReader.close();
 
         // Count the time
@@ -59,8 +69,7 @@ public class StdInputFileGenerator
 
     }
 
-    public static void PhraseGenerator(String inputPath, String outputPath,
-                                       CommandType commandType) throws IOException
+    public static void PhraseGenerator(String inputFile, String outputPath) throws IOException
     {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -68,8 +77,14 @@ public class StdInputFileGenerator
         System.out.println("[INFO] Running test: SeparatedChinesePhrase");
 
         // Declare writer and reader
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputPath));
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputPath));
+        BufferedWriter insertionWriter = new BufferedWriter(
+                new FileWriter(outputPath + ".addition.txt"));
+        BufferedWriter deletionWriter = new BufferedWriter(
+                new FileWriter(outputPath + ".deletion.txt"));
+        BufferedWriter searchWriter = new BufferedWriter(
+                new FileWriter(outputPath + ".search.txt"));
+
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFile));
         long lineCount = 0;
 
         // Current line of the string
@@ -92,19 +107,25 @@ public class StdInputFileGenerator
                     // Skip empty term name
                     if(!term.getName().isEmpty() && !term.getName().equals(" "))
                     {
-                        phraseList.add(term.getName());
+                        insertionWriter.write(String.format("A %s\n", term.getName()));
+                        deletionWriter.write(String.format("RO %s\n", term.getName()));
+                        searchWriter.write(String.format("S %s\n", term.getName()));
                     }
                 }
-
-                // Start to generate the command
-                commandGenerator(commandType, phraseList, bufferedWriter);
 
             }
         }
 
         // Close the writer and reader
-        bufferedWriter.flush();
-        bufferedWriter.close();
+        insertionWriter.flush();
+        deletionWriter.flush();
+        searchWriter.flush();
+
+        insertionWriter.close();
+        deletionWriter.close();
+        searchWriter.close();
+
+
         bufferedReader.close();
 
         // Count the time
@@ -152,50 +173,6 @@ public class StdInputFileGenerator
         }
 
         return stringBuilder.toString();
-    }
-
-    private static void commandGenerator(CommandType commandType,
-                                         ArrayList<String> itemList, BufferedWriter writer) throws IOException
-    {
-        if(itemList.size() <= 1) return;
-
-        switch (commandType)
-        {
-            case INSERTION:
-            {
-                for(String strToWrite : itemList)
-                {
-                    writer.write(String.format("A %s\n", strToWrite));
-                }
-            }
-            case DELETION:
-            {
-                for(String strToWrite : itemList)
-                {
-                    writer.write(String.format("RO %s\n", strToWrite));
-                }
-            }
-            case SEARCH:
-            {
-                for(String strToWrite : itemList)
-                {
-                    writer.write(String.format("S %s\n", strToWrite));
-                }
-            }
-        }
-    }
-
-    private static void commandGenerator(CommandType commandType,
-                                         char[] charList, BufferedWriter writer) throws IOException
-    {
-        ArrayList<String> strList = new ArrayList<>();
-
-        for(Character character : charList)
-        {
-            strList.add(character.toString());
-        }
-
-        commandGenerator(commandType, strList, writer);
     }
 
 

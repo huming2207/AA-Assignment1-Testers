@@ -16,54 +16,72 @@ public class AssignmentRunner
         // Run the process
         Process process = processBuilder.start();
 
-        // Run insertion test first on every time (otherwise there will be nothing for deletion/search lol...)
-        for (File file : new File(testFilePath).listFiles())
-
+        // If user need to test insertion only, just do it...
+        if(commandType == CommandType.INSERTION)
         {
-            System.out.println(String.format("\n\n[INFO] Now testing %s , please wait...",
-                    file.getCanonicalPath()));
-
-            if (file.getCanonicalPath().endsWith(".insertion.txt"))
+            for (File file : new File(testFilePath).listFiles())
             {
-                runTest(file.getCanonicalPath(), process);
+                if (file.getCanonicalPath().endsWith(".addition.txt"))
+                {
+                    System.out.println(String.format("\n[INFO] Now testing %s for INSERTION, please wait...",
+                            file.getCanonicalPath()));
+
+                    runTest(file.getCanonicalPath(), process);
+                }
             }
         }
 
-        // If user need to test deletion, then do it...
-        if (commandType == CommandType.DELETION)
+        // If user need to test deletion, just do it...
+        else if (commandType == CommandType.DELETION)
         {
             for (File file : new File(testFilePath).listFiles())
-
             {
-                System.out.println(String.format("\n\n[INFO] Now testing %s for DELETION, please wait...",
-                        file.getCanonicalPath()));
+                if (file.getCanonicalPath().endsWith(".addition.txt"))
+                {
+                    System.out.println(String.format("\n[INFO] Now testing %s for INSERTION, please wait...",
+                            file.getCanonicalPath()));
+
+                    runTest(file.getCanonicalPath(), process);
+                }
 
                 if (file.getCanonicalPath().endsWith(".deletion.txt"))
                 {
+                    System.out.println(String.format("\n[INFO] Now testing %s for DELETION, please wait...",
+                            file.getCanonicalPath()));
                     runTest(file.getCanonicalPath(), process);
                 }
             }
         }
 
-        // If user needs to do search test, then do it...
+        // If user needs to do search test, just do it...
         else if (commandType == CommandType.SEARCH)
         {
-            for (File file : new File(testFilePath).listFiles())
 
+
+            for (File file : new File(testFilePath).listFiles())
             {
-                System.out.println(String.format("\n\n[INFO] Now testing %s for SEARCH, please wait...",
-                        file.getCanonicalPath()));
+                if (file.getCanonicalPath().endsWith(".addition.txt"))
+                {
+                    System.out.println(String.format("\n[INFO] Now testing %s for INSERTION, please wait...",
+                            file.getCanonicalPath()));
+
+                    runTest(file.getCanonicalPath(), process);
+                }
 
                 if (file.getCanonicalPath().endsWith(".search.txt"))
                 {
+                    System.out.println(String.format("\n[INFO] Now testing %s for SEARCH, please wait...",
+                            file.getCanonicalPath()));
+
                     runTest(file.getCanonicalPath(), process);
                 }
             }
         }
 
 
-        // Print exit code for debugging
-        System.out.println(String.format("[INFO] Process exit with code %d.", process.waitFor()));
+        // Print exit for debugging (see if somehow hangs or not)
+        process.destroyForcibly();
+        System.out.println("[INFO] Test finished, process killed.");
     }
 
     private static void runTest(String testFile, Process process) throws IOException

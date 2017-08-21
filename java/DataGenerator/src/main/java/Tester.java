@@ -39,7 +39,7 @@ public class Tester
                 // Run generator
                 try
                 {
-                    StdInputFileGenerator.EastAsianCharGenerator(inputPath, outputPath, commandTypeSelector());
+                    StdInputFileGenerator.EastAsianCharGenerator(inputPath, outputPath);
                 }
                 catch (IOException ioError)
                 {
@@ -64,7 +64,7 @@ public class Tester
                 // Run generator
                 try
                 {
-                    StdInputFileGenerator.PhraseGenerator(inputPath, outputPath, commandTypeSelector());
+                    StdInputFileGenerator.PhraseGenerator(inputPath, outputPath);
                 }
                 catch (IOException ioError)
                 {
