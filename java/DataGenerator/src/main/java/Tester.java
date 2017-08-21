@@ -36,12 +36,10 @@ public class Tester
                 String outputPath = scanner.nextLine();
 
 
-                CommandToGenerate commandToGenerate = extraCommandSelector();
-
                 // Run generator
                 try
                 {
-                    StdInputFileGenerator.EastAsianCharGenerator(inputPath, outputPath, commandToGenerate);
+                    StdInputFileGenerator.EastAsianCharGenerator(inputPath, outputPath, commandTypeSelector());
                 }
                 catch (IOException ioError)
                 {
@@ -62,12 +60,11 @@ public class Tester
                 System.out.print("\n[NOTICE] Enter output text file path: ");
                 String outputPath = scanner.nextLine();
 
-                CommandToGenerate commandToGenerate = extraCommandSelector();
 
                 // Run generator
                 try
                 {
-                    StdInputFileGenerator.PhraseGenerator(inputPath, outputPath, commandToGenerate);
+                    StdInputFileGenerator.PhraseGenerator(inputPath, outputPath, commandTypeSelector());
                 }
                 catch (IOException ioError)
                 {
@@ -119,13 +116,7 @@ public class Tester
                         mainMenu();
                     }
 
-                    // Iterate the files in one test file path so that it can
-                    for(File file : new File(testFilePath).listFiles())
-
-                    {
-                        System.out.println(String.format("\n\n[INFO] Now testing %s, please wait...", file.getCanonicalPath()));
-                        AssignmentRunner.Run(assignmentPath, testPart, file.getCanonicalPath());
-                    }
+                    AssignmentRunner.Run(assignmentPath, testPart, testFilePath, commandTypeSelector());
 
 
 
@@ -151,14 +142,12 @@ public class Tester
 
     }
 
-    private static CommandToGenerate extraCommandSelector()
+    private static CommandType commandTypeSelector()
     {
-        System.out.print("[NOTICE] Extra commands selector\n" +
-                "[NOTICE] 1 - Don't append any command\n" +
-                "[NOTICE] 2 - Randomly add some deletion commands (RO)\n" +
-                "[NOTICE] 3 - Add deletion commands after every insertion (RO)\n" +
-                "[NOTICE] 4 - Randomly add some search commands (S)\n" +
-                "[NOTICE] 5 - Add search commands after every insertion (S)\n" +
+        System.out.print("[NOTICE] What do you want to generate?\n" +
+                "[NOTICE] 1. Insertions\n" +
+                "[NOTICE] 2. Deletions\n" +
+                "[NOTICE] 3. Search\n" +
                 "[NOTICE] Your choice: ");
 
         Scanner scanner = new Scanner(System.in);
@@ -167,16 +156,14 @@ public class Tester
 
         switch(result)
         {
-            case 1: return CommandToGenerate.NONE;
-            case 2: return CommandToGenerate.RANDOM_REMOVE;
-            case 3: return CommandToGenerate.ALL_REMOVE;
-            case 4: return CommandToGenerate.RANDOM_SEARCH;
-            case 5: return CommandToGenerate.ALL_SEARCH;
+            case 1: return CommandType.INSERTION;
+            case 2: return CommandType.DELETION;
+            case 3: return CommandType.SEARCH;
             default:
             {
                 System.err.println("[ERROR] Invalid input, please try again.");
-                extraCommandSelector();
-                return CommandToGenerate.NONE; // For shutting up Intellij IDEA's warning only, useless.
+                commandTypeSelector();
+                return CommandType.INSERTION; // For shutting up Intellij IDEA's warning only, useless.
             }
         }
 

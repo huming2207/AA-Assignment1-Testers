@@ -4,12 +4,11 @@ import org.apache.commons.lang.time.StopWatch;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class StdInputFileGenerator
 {
     public static void EastAsianCharGenerator(String inputPath, String outputPath,
-                                              CommandToGenerate commandToGenerate) throws IOException
+                                              CommandType commandType) throws IOException
     {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -36,7 +35,8 @@ public class StdInputFileGenerator
                 char[] charArray = easternAsianStrFilter(lineRead).toCharArray();
 
                 // ...then write every char as command (append "A" before the char) one by one
-                for (char selectedChar : charArray) {
+                for (char selectedChar : charArray)
+                {
                     bufferedWriter.write(String.format("A %c\n", selectedChar));
                 }
 
@@ -44,7 +44,7 @@ public class StdInputFileGenerator
                 bufferedWriter.flush();
 
                 // Generate the commands
-                commandGenerator(commandToGenerate, charArray, bufferedWriter);
+                commandGenerator(commandType, charArray, bufferedWriter);
             }
         }
 
@@ -60,7 +60,7 @@ public class StdInputFileGenerator
     }
 
     public static void PhraseGenerator(String inputPath, String outputPath,
-                                       CommandToGenerate commandToGenerate) throws IOException
+                                       CommandType commandType) throws IOException
     {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -79,7 +79,6 @@ public class StdInputFileGenerator
         {
             if(!(lineRead.isEmpty() || lineRead.equals("\n") || lineRead.equals("\r\n")) )
             {
-
                 // Increase the line counter
                 lineCount++;
                 System.out.println(String.format("[INFO] Reading/writing line %d...", lineCount));
@@ -94,12 +93,11 @@ public class StdInputFileGenerator
                     if(!term.getName().isEmpty() && !term.getName().equals(" "))
                     {
                         phraseList.add(term.getName());
-                        bufferedWriter.write(String.format("A %s\n", term.getName()));
                     }
                 }
 
-                // If user need to generate some extra commands, then do it...
-                commandGenerator(commandToGenerate, phraseList, bufferedWriter);
+                // Start to generate the command
+                commandGenerator(commandType, phraseList, bufferedWriter);
 
             }
         }
@@ -156,75 +154,38 @@ public class StdInputFileGenerator
         return stringBuilder.toString();
     }
 
-    private static void commandGenerator(CommandToGenerate commandToGenerate,
+    private static void commandGenerator(CommandType commandType,
                                          ArrayList<String> itemList, BufferedWriter writer) throws IOException
     {
         if(itemList.size() <= 1) return;
 
-        switch (commandToGenerate)
+        switch (commandType)
         {
-            case NONE:
+            case INSERTION:
             {
-                break;
-            }
-            case ALL_REMOVE:
-            {
-                for(String item : itemList)
+                for(String strToWrite : itemList)
                 {
-                    writer.write(String.format("RO %s\n", item));
+                    writer.write(String.format("A %s\n", strToWrite));
                 }
-
-                writer.flush();
-                break;
             }
-            case ALL_SEARCH:
+            case DELETION:
             {
-                for(String item : itemList)
+                for(String strToWrite : itemList)
                 {
-                    writer.write(String.format("S %s\n", item));
+                    writer.write(String.format("RO %s\n", strToWrite));
                 }
-
-                writer.flush();
-                break;
             }
-            case RANDOM_REMOVE:
+            case SEARCH:
             {
-                Random random = new Random();
-                for(String item : itemList)
+                for(String strToWrite : itemList)
                 {
-                    // Get a random boolean
-                    if (random.nextBoolean())
-                    {
-                        // Randomly pick a char from the char array and write with a delete command "RA"
-                        writer.write(String.format("RO %s\n", item));
-
-                    }
+                    writer.write(String.format("S %s\n", strToWrite));
                 }
-
-                writer.flush();
-                break;
-            }
-            case RANDOM_SEARCH:
-            {
-                Random random = new Random();
-                for(String item : itemList)
-                {
-                    // Get a random boolean
-                    if (random.nextBoolean())
-                    {
-                        // Randomly pick a char from the char array and write with a delete command "RA"
-                        writer.write(
-                                String.format("S %s\n", item));
-                    }
-                }
-
-                writer.flush();
-                break;
             }
         }
     }
 
-    private static void commandGenerator(CommandToGenerate commandToGenerate,
+    private static void commandGenerator(CommandType commandType,
                                          char[] charList, BufferedWriter writer) throws IOException
     {
         ArrayList<String> strList = new ArrayList<>();
@@ -234,8 +195,9 @@ public class StdInputFileGenerator
             strList.add(character.toString());
         }
 
-        commandGenerator(commandToGenerate, strList, writer);
+        commandGenerator(commandType, strList, writer);
     }
+
 
 
 }
